@@ -8,12 +8,20 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   var valueEntered = 1.0;
-@override
-  void initState() {
-    Network().call();
+  double convertValue = 0.0;
 
+  Future<double> conversionPoint() async {
+    convertValue = await Network().call();
+    //print('value of conversion in initState is $convertValue');
+    return convertValue;
+  }
+
+  @override
+  void initState() {
+    conversionPoint();
     super.initState();
   }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -49,14 +57,16 @@ class _HomeScreenState extends State<HomeScreen> {
                 keyboardType: TextInputType.number,
                 onChanged: (value) {
                   setState(() {
-                    valueEntered = double.parse(value);
+                    valueEntered = convertValue * double.parse(value);
                   });
                   print(valueEntered);
                 },
               ),
             ),
           ),
-          Center(child: Text('$valueEntered'),)
+          Center(
+            child: Text('${valueEntered.toStringAsFixed(2)}'),
+          )
         ],
       ),
     );
